@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import University, Faculty, Program
+from .models import University, Faculty, Program, AdmissionInfo, InternationalCooperation
 
 # ============ BASIC SERIALIZERS ============
 
@@ -44,6 +44,10 @@ class UniversityDetailSerializer(serializers.ModelSerializer):
     # Include related children
     faculties = FacultySerializer(source='faculty_set', many=True, read_only=True)
     programs = ProgramSerializer(source='program_set', many=True, read_only=True)
+
+    # НОВЫЕ ПОЛЯ:
+    admissions = AdmissionSerializer(many=True, read_only=True)              # related_name='admissions'
+    international_programs = InternationalSerializer(many=True, read_only=True)  # related_name='international_programs'
     
     class Meta:
         model = University
@@ -60,9 +64,12 @@ class UniversityDetailSerializer(serializers.ModelSerializer):
             'address',
             'phone',
             'email',
-            'faculties',   # All faculties of this university
-            'programs'     # All programs of this university
+            'faculties',
+            'programs',
+            'admissions',            # ← ПРИЁМ И ПОСТУПЛЕНИЕ
+            'international_programs' # ← МЕЖДУНАРОДНОЕ СОТРУДНИЧЕСТВО
         ]
+
 
 class UniversityCompareSerializer(serializers.ModelSerializer):
     programs = serializers.SerializerMethodField()
@@ -94,3 +101,34 @@ class UniversityCompareSerializer(serializers.ModelSerializer):
 
         return ProgramSerializer(qs, many=True).data
 
+class AdmissionSerializer(serializers.ModelSerializer):
+    program_name = serializers.CharField(source='program.name', read_only=True)
+
+    class Meta:
+        model = AdmissionInfo
+        fields = [
+            'id',
+            'university',
+            'program',
+            'program_name',
+            'requirements',
+            'exams',
+            'min_score',
+            'deadline',
+            'scholarships',
+        ]
+
+
+class InternationalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InternationalCooperation
+        fields = [
+            'id',
+            'university',
+            'partner_name',
+            'country',
+            'program_name',
+            'type',
+            'language',
+            'description',
+        ]
