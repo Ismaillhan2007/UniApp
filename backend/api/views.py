@@ -6,7 +6,8 @@ from .serializers import (
     UniversityListSerializer,
     UniversityDetailSerializer,
     ProgramSerializer,
-    FacultySerializer
+    FacultySerializer,
+    UniversityCompareSerializer,
 )
 
 # ============ UNIVERSITIES ============
@@ -94,14 +95,38 @@ def search(request):
 
 # ============ COMPARE ============
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def compare(request):
-    """Compare multiple universities by IDs"""
-    ids = request.data.get('ids', [])
-    
+    # --- 1. IDs вузов ---
+    if request.method == 'GET':
+        ids_param = request.GET.get('ids', '')
+        ids = [int(x) for x in ids_param.split(',') if x.strip().isdigit()]
+        degree = request.GET.get('degree')
+        language = request.GET.get('language')
+    else:  # POST
+        ids = request.data.get('ids', []) or []
+        degree = request.data.get('degree')
+        language = request.data.get('language')
+
     if len(ids) < 2:
-        return Response({'error': 'Need at least 2 universities'}, status=status.HTTP_400_BAD_REQUEST)
-    
+        return Response(
+            {'error': 'Need at least 2 universities'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # --- 2. Фильтры для программ ---
+    program_filters = {
+        'degree': degree,
+        'language': language,
+    }
+
+    # --- 3. Вузы + сериализация ---
     universities = University.objects.filter(id__in=ids)
-    serializer = UniversityDetailSerializer(universities, many=True)
+
+    serializer = UniversityCompareSerializer(
+        universities,
+        many=True,
+        context={'program_filters': program_filters}
+    )
     return Response(serializer.data)
+

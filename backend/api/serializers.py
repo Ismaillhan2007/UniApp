@@ -63,3 +63,34 @@ class UniversityDetailSerializer(serializers.ModelSerializer):
             'faculties',   # All faculties of this university
             'programs'     # All programs of this university
         ]
+
+class UniversityCompareSerializer(serializers.ModelSerializer):
+    programs = serializers.SerializerMethodField()
+
+    class Meta:
+        model = University
+        fields = [
+            'id',
+            'name',
+            'city',
+            'ranking',
+            'student_count',
+            'website',
+            'programs',
+        ]
+
+    def get_programs(self, obj):
+        
+        filters = self.context.get('program_filters', {})
+        qs = obj.program_set.all()
+
+        degree = filters.get('degree')
+        language = filters.get('language')
+
+        if degree:
+            qs = qs.filter(degree=degree)
+        if language:
+            qs = qs.filter(language__icontains=language)
+
+        return ProgramSerializer(qs, many=True).data
+
