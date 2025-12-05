@@ -1,36 +1,46 @@
 from django.db import models
-from django.contrib.auth.models import User
 
-class Course(models.Model):
+class University(models.Model):
     name = models.CharField(max_length=200)
-    code = models.CharField(max_length=20)
-    professor = models.CharField(max_length=100)
+    name_kz = models.CharField(max_length=200, blank=True)  # Kazakh name
+    city = models.CharField(max_length=100)
+    description = models.TextField()
+    founded_year = models.IntegerField()
+    logo = models.URLField(blank=True)
+    website = models.URLField(blank=True)
+    ranking = models.IntegerField(null=True, blank=True)
+    student_count = models.IntegerField(null=True, blank=True)
+    
+    # Contact
+    address = models.TextField(blank=True)
+    phone = models.CharField(max_length=50, blank=True)
+    email = models.EmailField(blank=True)
+    
+    def __str__(self):
+        return self.name
+
+class Faculty(models.Model):
+    university = models.ForeignKey(University, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return f"{self.university.name} - {self.name}"
+
+class Program(models.Model):
+    DEGREE_CHOICES = [
+        ('bachelor', 'Бакалавриат'),
+        ('master', 'Магистратура'),
+        ('phd', 'Докторантура'),
+    ]
+    
+    university = models.ForeignKey(University, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=200)
+    degree = models.CharField(max_length=20, choices=DEGREE_CHOICES)
+    duration_years = models.IntegerField()
+    language = models.CharField(max_length=50)  # KZ, RU, EN
+    tuition_fee = models.IntegerField(null=True, blank=True)  # per year in tenge
     description = models.TextField(blank=True)
     
     def __str__(self):
-        return f"{self.code} - {self.name}"
-
-class Deadline(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    due_date = models.DateTimeField()
-    completed = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return self.title
-
-class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    score = models.IntegerField()  # 1-5
-    comment = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        unique_together = ('user', 'course')  # One rating per user per course
-    
-    def __str__(self):
-        return f"{self.course.code} - {self.score}/5"
+        return f"{self.name} ({self.degree})"
