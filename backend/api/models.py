@@ -2,7 +2,6 @@ from django.db import models
 
 class University(models.Model):
     name = models.CharField(max_length=200)
-    name_kz = models.CharField(max_length=200, blank=True)  # Kazakh name
     city = models.CharField(max_length=100)
     description = models.TextField()
     founded_year = models.IntegerField()
