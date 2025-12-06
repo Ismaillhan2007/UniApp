@@ -26,7 +26,7 @@ class Command(BaseCommand):
             address="пр. Кабанбай батыра, 53",
             phone="+7 (7172) 70 66 88",
             email="info_admissions@nu.edu.kz",
-            logo="https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Nazarbayev_University_Logo.png/220px-Nazarbayev_University_Logo.png"
+            logo="/logos/nu.png"
         )
         
         AdmissionInfo.objects.create(
@@ -80,7 +80,7 @@ class Command(BaseCommand):
             address="пр. аль-Фараби, 71",
             phone="+7 (727) 377 33 33",
             email="info@kaznu.kz",
-            logo="https://upload.wikimedia.org/wikipedia/ru/thumb/9/9c/KazNU_Logo.png/200px-KazNU_Logo.png"
+            logo="/logos/kaznu.png"
         )
 
         AdmissionInfo.objects.create(
@@ -134,7 +134,7 @@ class Command(BaseCommand):
             address="ул. Толе би, 59",
             phone="+7 (727) 357 42 42",
             email="info@kbtu.kz",
-            logo="https://kbtu.edu.kz/images/logo_kbtu_new.png"
+            logo="/logos/kbtu.png"
         )
 
         AdmissionInfo.objects.create(
@@ -188,7 +188,7 @@ class Command(BaseCommand):
             address="пр. Абая, 2",
             phone="+7 (727) 270 43 14",
             email="admissions@kimep.kz",
-            logo="https://www.kimep.kz/wp-content/uploads/2019/02/KIMEP_Logo_RGB_ENG.png"
+            logo="/logos/kimep.png"
         )
 
         AdmissionInfo.objects.create(
@@ -242,7 +242,7 @@ class Command(BaseCommand):
             address="ул. Сатпаева, 22а",
             phone="+7 (727) 292 60 25",
             email="info@satbayev.university",
-            logo="https://satbayev.university/resources/img/logo_satbayev_university.png"
+            logo="/logos/satbayev.png"
         )
 
         AdmissionInfo.objects.create(
