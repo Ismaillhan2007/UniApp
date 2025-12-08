@@ -280,8 +280,62 @@ class Command(BaseCommand):
             # PhD
             (sat_geo, "Metallurgy", "phd", 3, "KZ/RU", 2000000, "Advanced metallurgy research."),
         ])
+        # ==========================================
+        # 6. NARXOZ UNIVERSITY (Business/Economics)
+        # ==========================================
+        uni6 = University.objects.create(
+            name="Нархоз Университет",
+            city="Алматы",
+            description="Ведущий бизнес-университет с сильной экономической школой.",
+            founded_year=1963,
+            website="https://narxoz.kz",
+            ranking=6,
+            student_count=8000,
+            address="ул. Жандосова, 55",
+            phone="+7 (727) 356 25 25",
+            email="info@narxoz.kz",
+            logo="/logos/narxoz.png"
+        )
 
-        self.stdout.write(self.style.SUCCESS(f"База данных успешно обновлена! Добавлено 5 вузов с бакалавриатом, магистратурой и PhD."))
+        AdmissionInfo.objects.create(
+            university=uni6,
+            requirements="ЕНТ, IELTS 5.0+ (для англоязычных программ)",
+            exams="ЕНТ, IELTS/TOEFL (для международных программ)",
+            min_score="65 баллов (ЕНТ), IELTS 5.0",
+            deadline="20 августа",
+            scholarships="Гранты Narxoz, Стипендии от партнеров"
+        )
+
+        InternationalCooperation.objects.create(
+            university=uni6,
+            partner_name="University of Westminster",
+            country="UK",
+            program_name="Business Administration",
+            type="double_degree",
+            language="English",
+            description="Двойной диплом в области бизнес-администрирования."
+        )
+
+        # Faculties
+        narxoz_econ = Faculty.objects.create(university=uni6, name="Высшая школа экономики")
+        narxoz_business = Faculty.objects.create(university=uni6, name="Высшая школа бизнеса")
+        narxoz_law = Faculty.objects.create(university=uni6, name="Высшая школа права")
+
+        # Programs
+        self.create_programs(uni6, [
+            # Bachelor
+            (narxoz_econ, "Экономика", "bachelor", 4, "KZ/RU", 1800000, "Микро и макроэкономика."),
+            (narxoz_business, "Менеджмент", "bachelor", 4, "EN", 2000000, "Управление бизнес-процессами."),
+            (narxoz_business, "Финансы", "bachelor", 4, "KZ/RU/EN", 1900000, "Финансовый анализ и инвестиции."),
+            (narxoz_law, "Право", "bachelor", 4, "KZ/RU", 1700000, "Корпоративное право."),
+            # Master
+            (narxoz_business, "MBA", "master", 1, "EN", 4000000, "Executive MBA программа."),
+            (narxoz_econ, "Экономическая аналитика", "master", 2, "EN", 2500000, "Data-driven economics."),
+            # PhD
+            (narxoz_econ, "Экономические науки", "phd", 3, "KZ/RU/EN", 3000000, "Докторантура по экономике."),
+        ])
+
+        self.stdout.write(self.style.SUCCESS(f"База данных успешно обновлена! Добавлено 6 вузов с бакалавриатом, магистратурой и PhD."))
 
     def create_programs(self, uni, programs_data):
         for faculty, name, degree, duration, lang, fee, desc in programs_data:
